@@ -1,5 +1,6 @@
 var express = require('express');
 var mongoose = require('mongoose')
+var axios = require('axios')
 var app = express();
 const bodyParser = require('body-parser');
 
@@ -7,27 +8,33 @@ app.use(bodyParser.urlencoded({ extended: false}));
 app.use(bodyParser.json());
 
 app.use('/static', express.static("public"));
-app.set("view engine", "ejs")
+app.set("view engine", "ejs");
 const Todo = require('./models/todo.model');
 const mongoDB = 'mongodb+srv://candies_amanda:Ndx2dZV7I5rUTaJv@cluster0.godqah8.mongodb.net/?retryWrites=true&w=majority'
 mongoose.connect(mongoDB);
 mongoose.Promise = global.Promise;
 let db = mongoose.connection;
-db.on('error', console.error.bind(console,"MongoDB connection error: "))
+db.on('error', console.error.bind(console,"MongoDb connection error: "))
 
 
 app.get('/', function(req, res){
-    Todo.find(function(err, todo){
-        console.log(todo)
-        if(err){
-            res.json({"Error: ": err})
-        } else {
-            res.render('todo.ejs', {todoList: todo});
-        }
+    let comicData = {}
+    axios.get('https://xkcd.com/info.0.json').then(function(response){
+                Todo.find(function(err, todo){
+                    console.log(todo)
+                    if(err){
+                        res.json({"Error: ": err})
+                    } else {
+                        res.render('todo.ejs', {todoList: todo, comicData: response.data});
+                    }
+                })
+    }).catch(function(error){
+        res.json({"Error: ": error})
     })
+    
 })
 //Creates item in DB
-app.post('/', (req, res) => {
+app.post('/create', (req, res) => {
     let newTodo = new Todo({
         todo: req.body.content,
         done: false
@@ -41,7 +48,7 @@ app.post('/', (req, res) => {
     })
 })
 //Modifies item in DB
-app.put('/markdone', (req, res) => {
+app.put('/done', (req, res) => {
     let id = req.body.id;
     let err = null
     console.log(req.body)
