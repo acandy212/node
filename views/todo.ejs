@@ -14,19 +14,27 @@
                 console.log(_id)
                 fetch('/', {
                     method: 'PUT',
-                    body: JSON.stringify({ id: _id})
-                })
-                .then((response) => response.json())
-                .then((result) => {
-                    console.log('Success:', result);
+                    body: JSON.stringify({ id: `${_id}`}),
+                    headers: {
+                        "Content-Type": "application/json",
+                    }
                 })
                 .catch((error) => {
                     console.error('Error:', error);
                 });
             }
             function deleteItem(todoTag){
-                const id = todoTag.getAtrribute("data-todoId");
-            console.log(id) 
+                const _id = todoTag.getAtrribute("data-todoId");
+                console.log(_id)
+                fetch(`/${_id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        "Content-Type": "application/json",
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                }); 
             }
             // write the API call
         </script>
@@ -45,9 +53,15 @@
             <ul class="todo-list" >
                 <% todoList.forEach(function(todo){ %>
                     <li class="todo-list-item">
-                        <div class="todo-list-item-name">
-                            <%= todo.todo %>
-                        </div>
+                        <% if(todo.done){ %>
+                            <div class="todo-list-item-name strike-through">
+                                <%= todo.todo %>
+                            </div>
+                        <% } else { %>
+                            <div class="todo-list-item-name">
+                                <%= todo.todo %>
+                            </div>
+                        <% } %>
                         <button data-todoId="<%= todo._id %>" class="edit" onClick="deleteItem(this)" >
                             <i class="fa fa-plus"></i>
                         </button>

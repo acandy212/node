@@ -83,3 +83,7 @@ body{
     color: rgb(243, 96, 96);
     margin-right: 5px;
 }
+
+.todo-list-item .strike-through{
+    text-decoration: line-through;
+}

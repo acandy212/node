@@ -1,10 +1,12 @@
 var express = require('express');
 var mongoose = require('mongoose')
 var app = express();
+const bodyParser = require('body-parser');
 
+app.use(bodyParser.urlencoded({ extended: false}));
+app.use(bodyParser.json());
 
 app.use('/static', express.static("public"));
-app.use(express.urlencoded({ extended: true }))
 app.set("view engine", "ejs")
 const Todo = require('./models/todo.model');
 const mongoDB = 'mongodb+srv://candies_amanda:Ndx2dZV7I5rUTaJv@cluster0.godqah8.mongodb.net/?retryWrites=true&w=majority'
@@ -39,26 +41,27 @@ app.post('/', (req, res) => {
     })
 })
 //Modifies item in DB
-app.put('/', (req, res) => {
+app.put('/markdone', (req, res) => {
     let id = req.body.id;
-    let err = {}
+    let err = null
     console.log(req.body)
-    if(typeof id === "string"){
-        Todo.updateOne({_id: id}, {done: true}, function(err){
-            if(error){
-                console.log(error)
-                err = error
-            }
-        })
-    } else if (typeof id === "object") {
-        id.forEach( ID => {
-            Todo.updateOne({_id: id}, {done: true}, function(err){
-                if(error){
-                    err = error
-                }
-            })
-        })
-    }
+        if(typeof id === "string"){
+         Todo.updateOne({_id: id}, {done: true}, function(error){
+             if(error){
+                 console.log(error)
+                 err = error
+             }
+         })
+     } else if (typeof id === "object") {
+         id.forEach( ID => {
+             Todo.updateOne({_id: id}, {done: true}, function(err0r){
+                 if(error){
+                    console.log(error)
+                     err = error
+                 }
+             })
+         })
+     }
     if(err){
         res.json({"Error: ": err})
     } else {
@@ -66,29 +69,30 @@ app.put('/', (req, res) => {
     }
 })
 
-app.delete('/', (req, res) => {
-    let id = req.body.check;
-    let error = {}
-    if(typeof id === "string"){
-        Todo.deleteOne({_id: id}, function(err){
-            if(error){
-                err = error
-            }
-        })
-    } else if (typeof id === "object") {
-        id.forEach( ID => {
-            Todo.deleteOne({_id: ID}, function(err){
-                if(error){
-                    err = error
-                }
-            })
-        })
-    }
-    if(err){
-        res.json({"Error: ": err})
-    } else {
-        res.redirect('/');
-    }
+app.delete('/delete/:id', (req, res) => {
+    let id = req.params.id;
+    let err;
+    console.log(id)
+     if(typeof id === "string"){
+         Todo.deleteOne({_id: id}, function(error){
+             if(error){
+                 err = error
+             }
+         })
+     } else if (typeof id === "object") {
+         id.forEach( ID => {
+             Todo.deleteOne({_id: ID}, function(error){
+                 if(error){
+                     err = error
+                 }
+             })
+         })
+     }
+     if(err){
+         res.json({"Error: ": err})
+     } else {
+         res.redirect('/');
+     }
 })
 
 app.listen(3000, function(){
