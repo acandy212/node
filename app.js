@@ -15,7 +15,14 @@ db.on('error', console.error.bind(console,"MongoDB connection error: "))
 
 
 app.get('/', function(req, res){
-    res.render('todo.ejs');
+    Todo.find(function(err, todo){
+        console.log(todo)
+        if(err){
+            res.json({"Error: ": err})
+        } else {
+            res.render('todo.ejs', {todoList: todo});
+        }
+    })
 })
 //Creates item in DB
 app.post('/', (req, res) => {
@@ -27,23 +34,25 @@ app.post('/', (req, res) => {
         if(err){
             res.json({"Error: ": err})
         }else {
-            res.json({"Status: ": "Successful", "ObjectId": todo.id})
+            res.redirect('/');
         }
     })
 })
 //Modifies item in DB
 app.put('/', (req, res) => {
-    let id = req.body.check;
-    let error = {}
+    let id = req.body.id;
+    let err = {}
+    console.log(req.body)
     if(typeof id === "string"){
         Todo.updateOne({_id: id}, {done: true}, function(err){
             if(error){
+                console.log(error)
                 err = error
             }
         })
     } else if (typeof id === "object") {
         id.forEach( ID => {
-            Todo.updateOne({_id: ID}, {done: true}, function(err){
+            Todo.updateOne({_id: id}, {done: true}, function(err){
                 if(error){
                     err = error
                 }
@@ -53,7 +62,7 @@ app.put('/', (req, res) => {
     if(err){
         res.json({"Error: ": err})
     } else {
-        res.json({"Status: ": "Successful"})
+        res.redirect('/');
     }
 })
 
@@ -78,7 +87,7 @@ app.delete('/', (req, res) => {
     if(err){
         res.json({"Error: ": err})
     } else {
-        res.json({"Status: ": "Successful"})
+        res.redirect('/');
     }
 })
 
