@@ -61,14 +61,14 @@ app.put('/done', (req, res) => {
          })
      } else if (typeof id === "object") {
          id.forEach( ID => {
-             Todo.updateOne({_id: id}, {done: true}, function(err0r){
+             Todo.updateOne({_id: id}, {done: true}, function(error){
                  if(error){
                     console.log(error)
                      err = error
                  }
              })
          })
-     }
+    }
     if(err){
         res.json({"Error: ": err})
     } else {

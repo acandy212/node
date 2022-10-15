@@ -82,6 +82,8 @@ body{
 .todo-list-item .remove{
     color: rgb(243, 96, 96);
     margin-right: 5px;
+    cursor: pointer;
+    text-decoration: none;
 }
 
 .todo-list-item .strike-through{

@@ -66,10 +66,10 @@
                                 <%= todo.todo %>
                             </div>
                         <% } %>
-                        <button data-todoId="<%= todo._id %>" class="remove" onClick="done(this)">
+                        <button data-todoId="<%= todo._id %>" class="remove" onClick="done(this)" >
                             <i class="fa fa-pencil"></i>
                         </button>
-                        <button data-todoId="<%= todo._id %>" class="edit" onClick="deleteItem(this)" >
+                        <button data-todoId="<%= todo._id %>" class="edit" onClick="deleteItem(this)">
                             <i class="fa fa-trash"></i>
                         </button>
                     </li>
