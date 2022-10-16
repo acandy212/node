@@ -24,7 +24,7 @@
                 // min 1, max 2682 
             }
             function deleteItem(todoTag){
-                const _id = todoTag.getAtrribute("data-todoId");
+                const _id = todoTag.getAttribute("data-todoId");
                 fetch(`/delete/${_id}`, {
                     method: 'DELETE',
                     headers: {
